@@ -1,3 +1,5 @@
+import { createSlice  } from "@reduxjs/toolkit";
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -6,20 +8,6 @@ const anecdotesAtStart = [
   'Premature optimization is the root of all evil.',
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ];
-
-export const upVote = (id) => {
-  return {
-    type: 'VOTE',
-    payload: id
-  };
-};
-
-export const newAnecdote = (anecdote) => {
-  return {
-    type: 'NEW_ITEM',
-    payload: anecdote
-  };
-};
 
 const getId = () => (100000 * Math.random()).toFixed(0);
 
@@ -39,27 +27,24 @@ const compareFn = (a, b) => {
 
 const initialState = anecdotesAtStart.map(asObject);
 
-const reducer = (state = initialState, action) => {
-  // console.log('state now: ', state);
-  // console.log('action', action);
-
-  const { type, payload } = action;
-
-  switch(type) {
-    case 'VOTE':
-      const toVote = state.find(anecdote => anecdote.id === payload);
+const anecdoteSlice = createSlice({
+  name: 'anecdotes',
+  initialState,
+  reducers: {
+    newAnecdote (state, action) {
+      return state
+        .concat(asObject(action.payload))
+        .sort(compareFn);
+    },
+    upVote (state, action) {
+      const toVote = state.find(anecdote => anecdote.id === action.payload);
+      const itemIndex = state.indexOf(toVote);
       toVote.votes++;
-      return state
-        .map(anecdote => anecdote.id !== payload ? anecdote : toVote)
-        .sort(compareFn);
+      state[itemIndex] = toVote;
+      return state;
+    }
+  }
+});
 
-    case 'NEW_ITEM':
-      return state
-        .concat(asObject(payload))
-        .sort(compareFn);
-    
-      default: return state;
-  };
-};
-
-export default reducer;
+export const { newAnecdote, upVote } = anecdoteSlice.actions;
+export default anecdoteSlice.reducer;
