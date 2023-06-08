@@ -1,4 +1,4 @@
-import Filter from './components/Filter'
+import Filter from './components/Filter';
 import AnecdoteForm from './components/AnecdoteForm';
 import AnecdoteList from './components/AnecdoteList';
 
