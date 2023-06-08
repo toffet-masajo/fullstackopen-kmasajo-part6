@@ -30,6 +30,9 @@ const reducer = (state = initialState, action) => {
       const toVote = state.find( anecdote => anecdote.id === payload );
       toVote.votes++;
       return state.map(anecdote => anecdote.id !== payload ? anecdote : toVote);
+
+    case 'NEW_ITEM':
+      return state.concat(asObject(payload));
     
       default: return state
   }
