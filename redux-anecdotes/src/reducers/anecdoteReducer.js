@@ -7,6 +7,20 @@ const anecdotesAtStart = [
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
 
+export const upVote = (id) => {
+  return {
+    type: 'VOTE',
+    payload: id
+  }
+}
+
+export const newAnecdote = (anecdote) => {
+  return {
+    type: 'NEW_ITEM',
+    payload: anecdote
+  }
+}
+
 const getId = () => (100000 * Math.random()).toFixed(0)
 
 const asObject = (anecdote) => {
@@ -18,8 +32,8 @@ const asObject = (anecdote) => {
 }
 
 const compareFn = (a, b) => {
-  if( a.votes > b.votes) return -1;
-  if( a.votes < b.votes) return 1;
+  if(a.votes > b.votes) return -1;
+  if(a.votes < b.votes) return 1;
   return 0;
 }
 
@@ -33,7 +47,7 @@ const reducer = (state = initialState, action) => {
 
   switch(type) {
     case 'VOTE':
-      const toVote = state.find( anecdote => anecdote.id === payload );
+      const toVote = state.find(anecdote => anecdote.id === payload);
       toVote.votes++;
       return state
         .map(anecdote => anecdote.id !== payload ? anecdote : toVote)
