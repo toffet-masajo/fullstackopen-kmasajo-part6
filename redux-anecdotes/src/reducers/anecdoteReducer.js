@@ -17,6 +17,12 @@ const asObject = (anecdote) => {
   }
 }
 
+const compareFn = (a, b) => {
+  if( a.votes > b.votes) return -1;
+  if( a.votes < b.votes) return 1;
+  return 0;
+}
+
 const initialState = anecdotesAtStart.map(asObject)
 
 const reducer = (state = initialState, action) => {
@@ -29,10 +35,14 @@ const reducer = (state = initialState, action) => {
     case 'VOTE':
       const toVote = state.find( anecdote => anecdote.id === payload );
       toVote.votes++;
-      return state.map(anecdote => anecdote.id !== payload ? anecdote : toVote);
+      return state
+        .map(anecdote => anecdote.id !== payload ? anecdote : toVote)
+        .sort(compareFn);
 
     case 'NEW_ITEM':
-      return state.concat(asObject(payload));
+      return state
+        .concat(asObject(payload))
+        .sort(compareFn);
     
       default: return state
   }
