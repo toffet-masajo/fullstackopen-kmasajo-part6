@@ -19,12 +19,6 @@ const asObject = (anecdote) => {
   };
 };
 
-const compareFn = (a, b) => {
-  if(a.votes > b.votes) return -1;
-  if(a.votes < b.votes) return 1;
-  return 0;
-};
-
 const initialState = anecdotesAtStart.map(asObject);
 
 const anecdoteSlice = createSlice({
@@ -32,9 +26,7 @@ const anecdoteSlice = createSlice({
   initialState,
   reducers: {
     newAnecdote (state, action) {
-      return state
-        .concat(asObject(action.payload))
-        .sort(compareFn);
+      return state.concat(asObject(action.payload));
     },
     upVote (state, action) {
       const toVote = state.find(anecdote => anecdote.id === action.payload);
