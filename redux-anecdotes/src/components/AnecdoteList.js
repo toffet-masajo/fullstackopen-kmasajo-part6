@@ -20,8 +20,7 @@ const AnecdoteList = () => {
 
     const updatedAnecdote = { content, id, votes: votes+1 };
     dispatch(increaseVote(updatedAnecdote));
-    dispatch(setNotification(notification));
-    setTimeout(() => dispatch(setNotification('')), 5000);
+    dispatch(setNotification(notification, 5));
   };
 
   const compareFn = (a, b) => {
