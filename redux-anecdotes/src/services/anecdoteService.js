@@ -14,4 +14,10 @@ const createNew = async (content) => {
   return data;
 };
 
-export { getAll, createNew };
+const addVote = async (content) => {
+  const id = content.id;
+  const { data } = await axios.put(`${DB_URL}/${id}`, content);
+  return data;
+};
+
+export { getAll, createNew, addVote };
