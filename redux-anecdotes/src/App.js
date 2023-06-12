@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getAll } from './services/anecdoteService';
-import { setAnecdotes } from './reducers/anecdoteReducer';
+import { initializeAnecdotes } from './reducers/anecdoteReducer';
 import AnecdoteForm from './components/AnecdoteForm';
 import AnecdoteList from './components/AnecdoteList';
 import Filter from './components/Filter';
@@ -11,7 +10,7 @@ import Notification from './components/Notification';
 const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    getAll().then(anecdotes => dispatch(setAnecdotes(anecdotes)));
+    dispatch(initializeAnecdotes());
   }, [dispatch]);
 
   const notification = useSelector(state => state.notification);
