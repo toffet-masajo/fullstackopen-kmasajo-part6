@@ -16,6 +16,12 @@ const App = () => {
       .then(res => res.data)
   }
 
+  const createAnecdote = ( newAnecdote ) => {
+    return axios
+      .post('http://localhost:3001/anecdotes', newAnecdote)
+      .then(res => res.data);
+  } 
+
   const result = useQuery(
     'anecdotes',
     getAnecdotes,
@@ -32,7 +38,7 @@ const App = () => {
       <h3>Anecdote app</h3>
     
       <Notification />
-      <AnecdoteForm />
+      <AnecdoteForm createAnecdote={createAnecdote}/>
     
       {anecdotes.map(anecdote =>
         <div key={anecdote.id}>
