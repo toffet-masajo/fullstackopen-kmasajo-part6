@@ -1,14 +1,10 @@
 import axios from 'axios';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import AnecdoteForm from './components/AnecdoteForm';
 import Notification from './components/Notification';
 
 const App = () => {
-
-  const handleVote = (anecdote) => {
-    console.log('vote')
-  }
 
   const getAnecdotes = () => {
     return axios
@@ -20,7 +16,25 @@ const App = () => {
     return axios
       .post('http://localhost:3001/anecdotes', newAnecdote)
       .then(res => res.data);
-  } 
+  }
+
+  const voteAnecdote = ( anecdote ) => {
+    return axios
+      .put(`http://localhost:3001/anecdotes/${anecdote.id}`, anecdote)
+      .then(res => res.data);
+  }
+
+  const queryClient = useQueryClient();
+  const votedAnecdoteMutation = useMutation(
+    voteAnecdote,
+    {
+      onSuccess: () => queryClient.invalidateQueries('anecdotes')
+    }
+  )
+
+  const handleVote = (anecdote) => {
+    votedAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes+1 });
+  }
 
   const result = useQuery(
     'anecdotes',
