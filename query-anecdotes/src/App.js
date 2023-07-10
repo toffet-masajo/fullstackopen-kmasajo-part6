@@ -1,34 +1,21 @@
-import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import AnecdoteForm from './components/AnecdoteForm';
 import Notification from './components/Notification';
-
+import { getAnecdotes, voteAnecdote } from './components/api';
 const App = () => {
-
-  const getAnecdotes = () => {
-    return axios
-      .get('http://localhost:3001/anecdotes')
-      .then(res => res.data)
-  }
-
-  const createAnecdote = ( newAnecdote ) => {
-    return axios
-      .post('http://localhost:3001/anecdotes', newAnecdote)
-      .then(res => res.data);
-  }
-
-  const voteAnecdote = ( anecdote ) => {
-    return axios
-      .put(`http://localhost:3001/anecdotes/${anecdote.id}`, anecdote)
-      .then(res => res.data);
-  }
-
   const queryClient = useQueryClient();
   const votedAnecdoteMutation = useMutation(
     voteAnecdote,
     {
-      onSuccess: () => queryClient.invalidateQueries('anecdotes')
+      onSuccess: (votedAnecdote) => {
+        const anecdotes = queryClient.getQueryData('anecdotes');
+        queryClient.setQueryData('anecdotes', anecdotes.map(anecdote => {
+          if(anecdote.id === votedAnecdote.id)
+            return { ...anecdote, votes: anecdote.votes+1 };
+          return anecdote
+        }));
+      }
     }
   )
 
@@ -39,7 +26,7 @@ const App = () => {
   const result = useQuery(
     'anecdotes',
     getAnecdotes,
-    { retry: false }
+    { retry: false, refetchOnWindowFocus: false }
   );
 
   if(result.isLoading) return <div>loading data...</div>;
@@ -52,7 +39,7 @@ const App = () => {
       <h3>Anecdote app</h3>
     
       <Notification />
-      <AnecdoteForm createAnecdote={createAnecdote}/>
+      <AnecdoteForm />
     
       {anecdotes.map(anecdote =>
         <div key={anecdote.id}>
