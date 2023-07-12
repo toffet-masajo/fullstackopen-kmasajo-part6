@@ -16,17 +16,18 @@ const App = () => {
         queryClient.setQueryData('anecdotes', anecdotes.map(anecdote => {
           if(anecdote.id === votedAnecdote.id)
             return { ...anecdote, votes: anecdote.votes+1 };
-          return anecdote
+          return anecdote;
         }));
-      }
+        dispatch({ type: 'NEW_MESSAGE', payload: `anecdote ${votedAnecdote.content} voted`});
+      },
+      onError: ({ response }) => dispatch({ type: 'NEW_MESSAGE', payload: `${response.data.error}`}),
+      onSettled: () => setTimeout(() => dispatch({ type: 'CLEAR_MESSAGE' }), 5000)
     }
-  )
+  );
 
   const handleVote = (anecdote) => {
     votedAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes+1 });
-    dispatch({ type: 'NEW_MESSAGE', payload: `anecdote ${anecdote.content} voted`});
-    setTimeout( () => dispatch({ type: 'CLEAR_MESSAGE' }), 5000);
-  }
+  };
 
   const result = useQuery(
     'anecdotes',
@@ -35,7 +36,7 @@ const App = () => {
   );
 
   if(result.isLoading) return <div>loading data...</div>;
-  if(result.isError) return <div>anecdote service not available due to problems in server</div>
+  if(result.isError) return <div>anecdote service not available due to problems in server</div>;
 
   const anecdotes = result.data;
 
@@ -59,7 +60,7 @@ const App = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
