@@ -13,7 +13,7 @@ const App = () => {
     dispatch(initializeAnecdotes());
   }, [dispatch]);
 
-  const notification = useSelector(state => state.notification);
+  const notification = useSelector(state => state.notification.message);
 
   return (
     <div>
